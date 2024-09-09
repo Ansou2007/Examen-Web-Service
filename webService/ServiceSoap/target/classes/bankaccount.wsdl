@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions
+    xmlns="http://schemas.xmlsoap.org/wsdl/"
+    xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    xmlns:tns="http://example.com/bankaccount"
+    name="BankAccountService"
+    targetNamespace="http://example.com/bankaccount">
+
+    <!-- Types -->
+    <types>
+        <xsd:schema
+            xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            xmlns:tns="http://example.com/bankaccount"
+            targetNamespace="http://example.com/bankaccount">
+
+            <!-- Definition du type Transaction -->
+            <xsd:complexType name="Transaction">
+                <xsd:sequence>
+                    <xsd:element name="transactionId" type="xsd:string"/>
+                    <xsd:element name="accountId" type="xsd:string"/>
+                    <xsd:element name="amount" type="xsd:double"/>
+                    <xsd:element name="currency" type="xsd:string"/>
+                    <xsd:element name="type" type="xsd:string"/>
+                    <xsd:element name="date" type="xsd:string"/>
+                </xsd:sequence>
+            </xsd:complexType>
+
+            <!-- Definition des types de requêtes et de réponses -->
+            <xsd:complexType name="GetTransactionsRequest">
+                <xsd:sequence>
+                    <xsd:element name="accountId" type="xsd:string"/>
+                    <xsd:element name="pageNumber" type="xsd:int"/>
+                    <xsd:element name="pageSize" type="xsd:int"/>
+                </xsd:sequence>
+            </xsd:complexType>
+
+            <xsd:complexType name="GetTransactionsResponse">
+                <xsd:sequence>
+                    <xsd:element name="transaction" type="tns:Transaction" maxOccurs="unbounded"/>
+                </xsd:sequence>
+            </xsd:complexType>
+
+            <xsd:complexType name="TransferFundsRequest">
+                <xsd:sequence>
+                    <xsd:element name="creditor" type="xsd:string"/>
+                    <xsd:element name="debtor" type="xsd:string"/>
+                    <xsd:element name="amount" type="xsd:double"/>
+                    <xsd:element name="currency" type="xsd:string"/>
+                </xsd:sequence>
+            </xsd:complexType>
+
+            <xsd:complexType name="TransferFundsResponse">
+                <xsd:sequence>
+                    <xsd:element name="success" type="xsd:boolean"/>
+                </xsd:sequence>
+            </xsd:complexType>
+
+            <xsd:complexType name="GetBalanceRequest">
+                <xsd:sequence>
+                    <xsd:element name="accountId" type="xsd:string"/>
+                </xsd:sequence>
+            </xsd:complexType>
+
+            <xsd:complexType name="GetBalanceResponse">
+                <xsd:sequence>
+                    <xsd:element name="balance" type="xsd:double"/>
+                </xsd:sequence>
+            </xsd:complexType>
+        </xsd:schema>
+    </types>
+
+    <!-- Messages -->
+    <message name="GetBalanceRequest">
+        <part name="parameters" element="tns:GetBalanceRequest"/>
+    </message>
+    <message name="GetBalanceResponse">
+        <part name="parameters" element="tns:GetBalanceResponse"/>
+    </message>
+
+    <message name="GetTransactionsRequest">
+        <part name="parameters" element="tns:GetTransactionsRequest"/>
+    </message>
+    <message name="GetTransactionsResponse">
+        <part name="parameters" element="tns:GetTransactionsResponse"/>
+    </message>
+
+    <message name="TransferFundsRequest">
+        <part name="parameters" element="tns:TransferFundsRequest"/>
+    </message>
+    <message name="TransferFundsResponse">
+        <part name="parameters" element="tns:TransferFundsResponse"/>
+    </message>
+
+    <!-- Port Type -->
+    <portType name="BankAccountServicePortType">
+        <operation name="getBalance">
+            <input message="tns:GetBalanceRequest"/>
+            <output message="tns:GetBalanceResponse"/>
+        </operation>
+        <operation name="getTransactions">
+            <input message="tns:GetTransactionsRequest"/>
+            <output message="tns:GetTransactionsResponse"/>
+        </operation>
+        <operation name="transferFunds">
+            <input message="tns:TransferFundsRequest"/>
+            <output message="tns:TransferFundsResponse"/>
+        </operation>
+    </portType>
+
+    <!-- Binding -->
+    <binding name="BankAccountServiceBinding" type="tns:BankAccountServicePortType">
+        <soap:binding transport="http://schemas.xmlsoap.org/soap/http" style="document"/>
+        <operation name="getBalance">
+            <soap:operation soapAction="urn:getBalance"/>
+            <input>
+                <soap:body use="literal"/>
+            </input>
+            <output>
+                <soap:body use="literal"/>
+            </output>
+        </operation>
+        <operation name="getTransactions">
+            <soap:operation soapAction="urn:getTransactions"/>
+            <input>
+                <soap:body use="literal"/>
+            </input>
+            <output>
+                <soap:body use="literal"/>
+            </output>
+        </operation>
+        <operation name="transferFunds">
+            <soap:operation soapAction="urn:transferFunds"/>
+            <input>
+                <soap:body use="literal"/>
+            </input>
+            <output>
+                <soap:body use="literal"/>
+            </output>
+        </operation>
+    </binding>
+
+    <!-- Service -->
+    <service name="BankAccountService">
+        <port name="BankAccountServicePort" binding="tns:BankAccountServiceBinding">
+            <soap:address location="http://localhost:8080/bankaccount"/>
+        </port>
+    </service>
+</definitions>
